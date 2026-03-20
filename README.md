@@ -43,8 +43,6 @@ This runs the full workflow sequentially:
 
 ## Full Command Options
 
-While the script is designed to be run as a single workflow (`all`), individual stages are also available for flexibility:
-
 ```bash
 ./distributed-storage-monitor.sh daily
 ./distributed-storage-monitor.sh top-users
@@ -70,6 +68,30 @@ cron / scheduled run
 
 ---
 
+## Real-World Experience: Storage Governance System (Enterprise)
+
+In a global development environment supporting distributed engineering teams, I designed and implemented an automated storage governance system to address uncontrolled disk growth across shared workspaces.
+
+### Key Capabilities
+
+- Identified top disk consumers across multi-terabyte environments  
+- Generated automated usage reports for leadership visibility  
+- Notified top offenders with actionable remediation guidance  
+- Implemented a 30-day enforcement lifecycle:
+  - warning phase  
+  - automated cleanup (file relocation to scratch space)  
+- Built a reversible workflow:
+  - managers could restore user data via a single-click script embedded in notifications  
+
+### Impact
+
+- Provided leadership with clear visibility into storage utilization trends  
+- Reduced unnecessary storage consumption from non-work-related files  
+- Introduced accountability without permanent data loss  
+- Enabled scalable governance across global engineering teams  
+
+---
+
 ## Example Use Cases
 
 - Track capacity growth across shared development workspaces  
@@ -80,8 +102,6 @@ cron / scheduled run
 ---
 
 ## Configuration
-
-The script supports environment overrides for public-safe portability:
 
 - `OUTPUT_DIR`  
 - `TEMP_DIR`  
@@ -100,32 +120,48 @@ OUTPUT_DIR=./reports BASE_PATH=/srv/workspaces ./distributed-storage-monitor.sh 
 
 ## Scheduling
 
-You can run the unified script manually or from cron.
-
-### Example cron entry
-
 ```cron
 0 6 * * 1 /path/to/distributed-storage-monitor.sh all
 ```
-
-This keeps the design aligned with the core philosophy:
-
-- one script  
-- one entry point  
-- fully automated workflow  
 
 ---
 
 ## Design Philosophy
 
-This project is intentionally structured around:
-
-- a **single orchestration script**  
-- a **sequential execution model**  
+- single orchestration script  
+- sequential execution model  
 - minimal operational complexity  
-- portability across environments  
+- portable across environments  
 
-The goal is to eliminate fragmentation from multiple scripts and provide a clean, reproducible workflow for storage monitoring.
+---
+
+## Lessons Learned
+
+This system highlighted important real-world considerations:
+
+- balancing enforcement with developer autonomy  
+- maintaining transparency in automated actions  
+- designing reversible workflows to reduce friction  
+- ensuring operational visibility without excessive intrusion  
+
+---
+
+## Performance Considerations
+
+The original system relied on filesystem traversal, which can be expensive at large scale.
+
+This informed modern design approaches such as:
+
+- metadata-driven analysis  
+- sampling strategies  
+- quota-based enforcement (ZFS / QFS)  
+- event-driven monitoring  
+
+This implementation is best suited for:
+
+- small to mid-sized environments  
+- fast storage systems (RAID-backed volumes)  
+- scenarios where visibility is prioritized  
 
 ---
 
@@ -133,25 +169,7 @@ The goal is to eliminate fragmentation from multiple scripts and provide a clean
 
 This public version is sanitized and uses generic host and workspace naming.
 
-Replace the host-to-workspace mapping in the script with values appropriate for your environment.
-
----
-
-## Recommendation
-
-This repository is optimized for:
-
-- simplicity over fragmentation  
-- clarity over abstraction  
-- real-world DevOps operational workflows  
-
-The preferred usage pattern is:
-
-```bash
-./distributed-storage-monitor.sh all
-```
-
-Cron scheduling is optional, not required.
+Replace the host-to-workspace mapping with your environment-specific values.
 
 ---
 

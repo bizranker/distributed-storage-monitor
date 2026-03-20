@@ -1,51 +1,34 @@
-# 📦 distributed-storage-monitor
+# distributed-storage-monitor
 
-> Distributed storage monitoring and reporting toolkit for large DevOps build environments.
+Distributed storage monitoring and reporting toolkit for multi-host DevOps and build environments.
 
-This repository contains a coordinated set of Bash automation scripts originally built for a multi-host enterprise development environment backed by **HP / 3PAR storage** across multiple campuses connected by **private MPLS-style links**.
+This repository contains a unified Bash-based workflow that tracks filesystem usage, identifies top disk consumers, generates weekly CSV reports, and optionally emails the latest report to an operations team.
 
-The system was designed to help operations teams monitor storage usage, detect abuse, track capacity trends, and automatically deliver weekly reports to management.
+It was designed to help platform and DevOps teams improve storage visibility, detect abuse, and monitor capacity trends across multiple hosts and workspaces.
 
 ---
 
-## ✨ What It Does
+## What It Does
 
-- Collects daily disk usage metrics across multiple build hosts
-- Identifies top disk consumers by workspace and by user
+- Collects daily disk usage metrics across multiple workspaces
+- Identifies top disk consumers per workspace
 - Aggregates weekly storage utilization data into CSV reports
-- Emails operational reports to DevOps management automatically
-- Supports storage governance in environments with hundreds of developers
+- Optionally emails the latest report automatically
+- Supports storage governance in large shared build environments
 
 ---
 
-## 🧰 Repository Contents
+## Primary Script
 
-### `find-top-5-disk-space-users.sh`
-Runs on multiple hosts and finds the **top 5 disk space consumers per workspace** by walking the filesystem and aggregating usage by user.
+### `distributed-storage-monitor.sh`
 
-### `generate-daily-disk-space-data.sh`
-Collects daily `df` metrics across workspaces and writes structured CSV data for later aggregation.
+Unified orchestration script that combines the original multi-script workflow into a single entry point.
 
-### `generate-weekly-disk-space-usage-report.sh`
-Builds the final weekly CSV report by combining daily usage data, top-user data, and additional reporting inputs.
+Supported commands:
 
-### `weekly-disk-space-usage-email.sh`
-Packages the latest weekly report and emails it automatically to the operations team.
-
----
-
-## 🏗️ Architecture
-
-```text
-cron
- ├── generate-daily-disk-space-data.sh
- ├── find-top-5-disk-space-users.sh
- │
- ▼
-generate-weekly-disk-space-usage-report.sh
- │
- ▼
-weekly-disk-space-usage-email.sh
- │
- ▼
-DevOps management reporting
+```bash
+./distributed-storage-monitor.sh daily
+./distributed-storage-monitor.sh top-users
+./distributed-storage-monitor.sh weekly
+./distributed-storage-monitor.sh email
+./distributed-storage-monitor.sh all
